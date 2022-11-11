@@ -14,7 +14,6 @@ const randomString = Math.random().toString(36).substring(2, 8);
 function generateRandomString() {
   return randomString;
  };
-console.log(generateRandomString());
 
 
 const urlDatabase = {
@@ -51,6 +50,12 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = { id: req.params.id, longUrl: urlDatabase[req.params.id] };
   res.render("urls_show", templateVars);
 })
+
+// GET route to handle shortURL requests and redirect to longURL
+app.get("/u/:id", (req, res) => {
+  const longURL = urlDatabase[req.params.id];
+  res.redirect(longURL);
+});
 
 // Sending HTML
 app.get("/hello", (req, res) => {
