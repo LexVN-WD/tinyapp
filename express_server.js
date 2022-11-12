@@ -35,10 +35,19 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-// POST request
+// POST
+
+/* New Url */
 app.post("/urls", (req, res) => {
   console.log(req.body); // Log the POST request body to the console
   res.send("Ok"); // Respond with 'Ok' (we will replace this)
+});
+
+/* Delete Existing Url */
+app.post("/urls/:id/delete", (req, res) => {
+  console.log(req.body); // Log the POST request body to the console
+  delete urlDatabase[req.params.id]
+  res.redirect("/urls");
 });
 
 //GET route to render urls_new template

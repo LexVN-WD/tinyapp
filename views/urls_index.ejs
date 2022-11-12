@@ -31,9 +31,16 @@
             <td>
               <%= urls[id] %>
             </td>
+            <td>
+              <form method="POST" action="/urls/<%= id %>/delete">
+                <button type="submit">Delete
+                </button>
+              </form>
+            </td>
           </tr>
           <% } %>
       </tbody>
+      </form>
     </table>
           <p class="card-text">
             New Short URL: <a href="#">
@@ -41,6 +48,8 @@
             </a>
           </p>
   </main>
+
+
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
