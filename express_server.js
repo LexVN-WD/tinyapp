@@ -1,10 +1,10 @@
+// Imports
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 
+// Setup
 app.set("view engine", "ejs");
-
-// implement POST requests
 app.use(express.urlencoded({ extended: true }));
 
 
@@ -35,7 +35,28 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-// POST
+
+/* Redirect to update url page */
+app.get("/urls/<%= id%>/update", (req, res) => {
+  console.log(req.body); // Log the POST request body to the console
+  res.redirect("/urls/<%= id%>");
+});
+
+//GET route to render urls_new template
+app.get("/urls/new", (req, res) => {
+  res.render("urls_new");
+});
+
+app.get("/urls/:id", (req, res) => {
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
+  res.render("urls_show", templateVars);
+})
+
+// GET route to handle shortURL requests and redirect to longURL
+app.get("/u/:id", (req, res) => {
+  const longURL = urlDatabase[req.params.id];
+  res.redirect(longURL);
+});
 
 /* New Url */
 app.post("/urls", (req, res) => {
@@ -50,20 +71,18 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-//GET route to render urls_new template
-app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+/* Update Existing Url */
+app.post("/urls/:id", (req, res) => {
+  const id = req.params.id;
+  const longURL = req.body.longURL;
+  urlDatabase[id] = longURL
+  res.redirect(`/urls/${id}`);
 });
 
-app.get("/urls/:id", (req, res) => {
-  const templateVars = { id: req.params.id, longUrl: urlDatabase[req.params.id] };
-  res.render("urls_show", templateVars);
-})
-
-// GET route to handle shortURL requests and redirect to longURL
-app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id];
-  res.redirect(longURL);
+/* Redirect to update url page */
+app.get("/urls/<%= id%>/update", (req, res) => {
+  console.log(req.body); // Log the POST request body to the console
+  res.redirect("/urls/<%= id%>");
 });
 
 // Sending HTML
