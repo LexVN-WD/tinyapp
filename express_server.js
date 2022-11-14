@@ -11,16 +11,29 @@ app.use(cookieParser());
 
 
 // random string url id generator
-const randomString = Math.random().toString(36).substring(2, 8);
-
-function generateRandomString() {
+function randomID() {
+  const randomString = Math.random().toString(36).substring(2, 8);
   return randomString;
  };
 
-
+// URL database variable
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
+};
+
+// Global users object 
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
+  },
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  },
 };
 
 
@@ -120,6 +133,26 @@ app.post("/logout", (req, res) => {
   res.clearCookie('username');
   res.redirect("/urls");
 });
+
+// POST - /register endpoint
+app.post("/register", (req, res) => {
+  const newID = randomID();
+  const userEmail = req.body.email;
+  const userPass = req.body.password;
+
+  users[newID] = {
+    id: newID,
+    email: userEmail,
+    password: userPass,
+  };
+  res.cookie('user_id', newID);
+  res.redirect("/urls");
+  //console.log(users); --> test to make sure users object
+})
+
+
+
+
 
 // Sending HTML
 app.get("/hello", (req, res) => {
