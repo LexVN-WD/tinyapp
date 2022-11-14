@@ -112,7 +112,15 @@ app.get("/register", (req, res) => {
     user: user,
   };
   res.render("urls_register", templateVars);
-})
+});
+
+app.get("/login", (req, res) => {
+  let user = req.cookies["user_id"];
+  const templateVars = {
+    user: user,
+  };
+  res.render("urls_login", templateVars);
+});
 
 
 // ------ POST Requests ------ //
@@ -183,7 +191,43 @@ app.post("/register", (req, res) => {
   res.cookie('user_id', newID);
   res.redirect("/urls");
   //console.log(users); //--> /test to make sure users object
-})
+});
+
+// POST - Login Page
+app.post("/login", (req, res) => {
+  const newID = randomID();
+  let userEmail = req.body.email;
+  let userPass = req.body.password;
+
+  // error code checks
+  if (userEmail.length === 0) {
+    return res.status(400).json({
+      status: "invalid email entered"
+    });
+  };
+
+  if (userPass.length === 0) {
+    return res.status(400).json({
+      status: "invalid password entered"
+    });
+  };
+
+  if (findUserByEmail(users, userEmail)) {
+    return res.status(400).json({
+      status: "email already exists"
+    })
+  } else {
+    users[newID] = {
+      id: newID,
+      email: req.body.email,
+      password: req.body.password,
+    }
+  }
+  res.cookie('user_id', newID);
+  res.redirect("/urls");
+  //console.log(users); //--> /test to make sure users object
+});
+
 
 
 
