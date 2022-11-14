@@ -9,13 +9,6 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-
-// random string url id generator
-function randomID() {
-  const randomString = Math.random().toString(36).substring(2, 8);
-  return randomString;
- };
-
 // URL database variable
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -36,36 +29,65 @@ const users = {
   },
 };
 
+// random string url id generator
+const randomID = () => {
+  const randomString = Math.random().toString(36).substring(2, 8);
+  return randomString;
+ };
+
+// Helper function to find if email exists
+const existingEmailCheck = (users, userEmail) => {
+  for (const userID in users) {
+    if (users[userID]["email"] === userEmail) {
+      return true;
+    }
+  }
+  return false;
+};
+
+console.log()
+
+
 
 // ------ GET Requests ------ //
-
-// Adding Routes
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
 
 // GET - Landing Page
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
+// Adding Routes
+app.get("/urls.json", (req, res) => {
+  res.json(urlDatabase);
+});
+
+
 // GET - /urls
 app.get("/urls", (req, res) => {
-  let username = req.cookies.username;
+  let user = req.cookies["user_id"];
   let templateVars = { 
     urls: urlDatabase,
-    username: username,
+    user: users[user],
   };
   res.render("urls_index", templateVars);
 });
 
+//GET route to render urls_new template
+app.get("/urls/new", (req, res) => {
+  let user = req.cookies["user_id"];
+  let templateVars = {
+    user: users[user],
+  };
+  res.render("urls_new", templateVars);
+});
+
 // GET - /urls/:id (by shortURL handle)
 app.get("/urls/:id", (req, res) => {
-  let username = req.cookies.username;
+  let user = req.cookies["user_id"];
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id],
-    username: username,
+    user: users[user],
   };
   res.render("urls_show", templateVars);
 });
@@ -75,14 +97,6 @@ app.get("/urls/<%= id%>/update", (req, res) => {
   res.redirect("/urls/<%= id%>");
 });
 
-//GET route to render urls_new template
-app.get("/urls/new", (req, res) => {
-  let username = req.cookies.username;
-  let templateVars = {
-    username: username,
-  };
-  res.render("urls_new");
-});
 
 // GET route to handle shortURL requests and redirect to longURL
 app.get("/u/:id", (req, res) => {
@@ -91,9 +105,9 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  let username = req.cookies.username;
+  let user = req.cookies["user_id"];
   const templateVars = {
-    username: username,
+    user: user,
   };
   res.render("urls_register", templateVars);
 })
@@ -124,30 +138,49 @@ app.post("/urls/:id", (req, res) => {
 // log a cookie to the server
 app.post("/login", (req, res) => {
   let username = req.body.username;
-  let cookie = res.cookie("username", username);
+  let cookie = res.cookie("user_id", username);
   res.redirect("/urls");
 });
 
 // logout and clear cookie key-value pair
 app.post("/logout", (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect("/urls");
 });
 
 // POST - /register endpoint
 app.post("/register", (req, res) => {
   const newID = randomID();
-  const userEmail = req.body.email;
-  const userPass = req.body.password;
+  let userEmail = req.body.email;
+  let userPass = req.body.password;
 
-  users[newID] = {
-    id: newID,
-    email: userEmail,
-    password: userPass,
+  // error code checks
+  if (userEmail.length === 0) {
+    return res.status(400).json({
+      status: "invalid email entered"
+    });
   };
+
+  if (userPass.length === 0) {
+    return res.status(400).json({
+      status: "invalid password entered"
+    });
+  };
+
+  if (existingEmailCheck(users, userEmail)) {
+    return res.status(400).json({
+      status: "email already exists"
+    })
+  } else {
+    users[newID] = {
+      id: newID,
+      email: req.body.email,
+      password: req.body.password,
+    }
+  }
   res.cookie('user_id', newID);
   res.redirect("/urls");
-  //console.log(users); --> test to make sure users object
+  //console.log(users); //--> /test to make sure users object
 })
 
 
