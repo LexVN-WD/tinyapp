@@ -10,17 +10,17 @@
         <a class="nav-item nav-link" href="/urls">URL List</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
-    </div>
-    <% if (user) {%>
-        <h4> Welcome: <%= user %> </h4>
-        <form method="POST" action="/logout">
-          <button type="submit"> Logout </button>
-        </form>
-      <% } else {%>
-        <form method="POST" action="/login">
-          <input type="text" name="username" />
-          <button type="submit"> Sign-In </button>
+      <form method="POST" action="/login" >
+        <input type="text" name="username" placeholder="Username"/>
+        <button type ="submit"> Log-In </button>
+        <% if (true) { %>
+          <label> Welcome!: <%= username %> <label>
+          <form method="POST" action="/logout">
+            <button type="submit"> Logout </button>
           </form>
-      <% } %>
+          <% } else { %>
+          <%= false %>
+        <%} %>
+      </form>
   </nav>
-</header>+
+</header>
