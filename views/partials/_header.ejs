@@ -9,7 +9,6 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">URL List</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <a class="nav-item nav-link" href="/register">Register</a>
       </div>
     </div>
         <% if (user) { %>
@@ -20,6 +19,7 @@
           <% } else { %>
           <form method="POST" action="/login">
             <a class="btn btn btn-dark" href="/login">Login</a>
+            <a class="btn btn btn-dark" href="/register">Register</a>
           </form>
         <%} %>
   </nav>
