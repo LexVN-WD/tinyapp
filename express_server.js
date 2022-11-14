@@ -35,18 +35,20 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  let username = req.cookies.username;
   let templateVars = { 
     urls: urlDatabase,
-    username: req.cookies["username"],
+    username: username,
   };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
+  let username = req.cookies.username;
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id],
-    username: req.cookies.username,
+    username: username,
   };
   res.render("urls_show", templateVars);
 });
@@ -58,8 +60,9 @@ app.get("/urls/<%= id%>/update", (req, res) => {
 
 //GET route to render urls_new template
 app.get("/urls/new", (req, res) => {
+  let username = req.cookies.username;
   let templateVars = {
-    username: req.cookies["username"],
+    username: username,
   };
   res.render("urls_new");
 });
