@@ -23,17 +23,20 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-let user;
 
-app.get("/", (req, res) => {
-  res.send("Hello!");
-});
+// ------ GET Requests ------ //
 
 // Adding Routes
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+// GET - Landing Page
+app.get("/", (req, res) => {
+  res.send("Hello!");
+});
+
+// GET - /urls
 app.get("/urls", (req, res) => {
   let username = req.cookies.username;
   let templateVars = { 
@@ -43,6 +46,7 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+// GET - /urls/:id (by shortURL handle)
 app.get("/urls/:id", (req, res) => {
   let username = req.cookies.username;
   const templateVars = {
@@ -53,7 +57,7 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-/* Redirect to update url page */
+// GET - Redirect to update url page
 app.get("/urls/<%= id%>/update", (req, res) => {
   res.redirect("/urls/<%= id%>");
 });
@@ -72,6 +76,17 @@ app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[req.params.id];
   res.redirect(longURL);
 });
+
+app.get("/register", (req, res) => {
+  let username = req.cookies.username;
+  const templateVars = {
+    username: username,
+  };
+  res.render("urls_register", templateVars);
+})
+
+
+// ------ POST Requests ------ //
 
 /* New Url */
 app.post("/urls", (req, res) => {
@@ -100,16 +115,10 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
-
+// logout and clear cookie key-value pair
 app.post("/logout", (req, res) => {
   res.clearCookie('username');
   res.redirect("/urls");
-});
-
-/* Redirect to update url page */
-app.get("/urls/<%= id%>/update", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.redirect("/urls/<%= id%>");
 });
 
 // Sending HTML
