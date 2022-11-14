@@ -191,13 +191,14 @@ app.post("/login", (req, res) => {
   let userEmail = req.body.email;
   let userPass = req.body.password;
   let user = findUserByEmail(users, userEmail)
+  
   // if email cannot be found, return 403
   if (user === false) {
     return res.status(403).json({
       status: "email cannot be found"
     })
   };
-
+  // email matches but passwords do not, return 403
   if (user !== false) {
     if (user.password !== userPass) {
       return res.status(403).json({
