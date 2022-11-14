@@ -35,15 +35,17 @@ const randomID = () => {
   return randomString;
  };
 
-// Helper function to find if email exists
-const existingEmailCheck = (users, userEmail) => {
+
+// Helper function to find user by email
+const findUserByEmail = (users, userEmail) => {
   for (const userID in users) {
     if (users[userID]["email"] === userEmail) {
-      return true;
+      return users[userID];
     }
   }
   return false;
 };
+
 
 console.log()
 
@@ -167,7 +169,7 @@ app.post("/register", (req, res) => {
     });
   };
 
-  if (existingEmailCheck(users, userEmail)) {
+  if (findUserByEmail(users, userEmail)) {
     return res.status(400).json({
       status: "email already exists"
     })
