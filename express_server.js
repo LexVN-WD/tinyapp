@@ -89,7 +89,7 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id],
-    user: users[user],
+    user: user,
   };
   res.render("urls_show", templateVars);
 });
@@ -145,17 +145,10 @@ app.post("/urls/:id", (req, res) => {
   res.redirect(`/urls/${id}`);
 });
 
-// log a cookie to the server
-app.post("/login", (req, res) => {
-  let username = req.body.username;
-  let cookie = res.cookie("user_id", username);
-  res.redirect("/urls");
-});
-
-// logout and clear cookie key-value pair
+// POST - Logout and clear cookie key-value pair
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id');
-  res.redirect("/urls");
+  res.redirect("/login");
 });
 
 // POST - /register endpoint
@@ -195,37 +188,25 @@ app.post("/register", (req, res) => {
 
 // POST - Login Page
 app.post("/login", (req, res) => {
-  const newID = randomID();
   let userEmail = req.body.email;
   let userPass = req.body.password;
-
-  // error code checks
-  if (userEmail.length === 0) {
-    return res.status(400).json({
-      status: "invalid email entered"
-    });
-  };
-
-  if (userPass.length === 0) {
-    return res.status(400).json({
-      status: "invalid password entered"
-    });
-  };
-
-  if (findUserByEmail(users, userEmail)) {
-    return res.status(400).json({
-      status: "email already exists"
+  let user = findUserByEmail(users, userEmail)
+  // if email cannot be found, return 403
+  if (user === false) {
+    return res.status(403).json({
+      status: "email cannot be found"
     })
-  } else {
-    users[newID] = {
-      id: newID,
-      email: req.body.email,
-      password: req.body.password,
+  };
+
+  if (user !== false) {
+    if (user.password !== userPass) {
+      return res.status(403).json({
+        status: "password does not match"
+      })
     }
   }
-  res.cookie('user_id', newID);
+  res.cookie('user_id', user.id);
   res.redirect("/urls");
-  //console.log(users); //--> /test to make sure users object
 });
 
 
