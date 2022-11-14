@@ -10,17 +10,17 @@
         <a class="nav-item nav-link" href="/urls">URL List</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
-      <form method="POST" action="/login" >
-        <input type="text" name="username" placeholder="Username"/>
-        <button type ="submit"> Log-In </button>
-        <% if (true) { %>
-          <label> Welcome!: <%= username %> <label>
-          <form method="POST" action="/logout">
+    </div>
+        <% if (username) { %>
+          <label> Welcome: <%= username %> <label>
+          <form class="form-inline" method="POST" action="/logout">
             <button type="submit"> Logout </button>
           </form>
           <% } else { %>
-          <%= false %>
+          <form method="POST" action="/login">
+            <input type="text" name="username" placeholder="Username" />
+            <button type="submit"> Log-In </button>
+          </form>
         <%} %>
-      </form>
   </nav>
 </header>
