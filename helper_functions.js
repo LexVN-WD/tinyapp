@@ -1,5 +1,7 @@
 // Helper Function Storage
 
+const urlDatabase = require("./url_database");
+
 // random string url id generator
 const randomID = () => {
   const randomString = Math.random().toString(36).substring(2, 8);
@@ -17,16 +19,19 @@ const findUserByEmail = (users, userEmail) => {
 };
 
 // Helper function that returns URLS where userID is equal to ID of currently logged-in user
-const urlsForUser = (id, users) => {
-  for (keys in users) {
-    if (id === users[id].userID) {
-      urls[keys] = {
-        longURL: users[keys].longURL,
+const urlsForUser = (id) => {
+  let urls = {};
+  for (keys in urlDatabase) {
+    if (id === urlDatabase[keys].userID) {
+      urls = {
+        [keys]: {
+          longURL: urlDatabase[keys].longURL,
+        }
       }
     }
   }
-  return false;
-}
+  return urls;
+};
 
 
 module.exports = {
