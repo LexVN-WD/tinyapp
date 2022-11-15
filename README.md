@@ -11,19 +11,19 @@ This simple multipage app allows the user to :
 ## Final Product
 
 ### Home-page
-!["Home-page"](/pictures/tinyapp-home.png)
+!["Home-page"](/docs/tinyapp-home.png)
 
 ### Register Account Page
-!["Register"](/pictures/tinyapp-register.png)
+!["Register"](/docs/tinyapp-register.png)
 
 ### Log-in Page
-!["Log-In"](/pictures/tinyapp-login.png)
+!["Log-In"](/docs/tinyapp-login.png)
 
 ### Account URLS Page
-!["URLS"](/pictures/tinyapp-urls.png)
+!["URLS"](/docs/tinyapp-urls.png)
 
 ### Edit Account URLS Page
-!["Edit"](/pictures/tinyapp-edit.png)
+!["Edit"](/docs/tinyapp-edit.png)
 
 
 ## Dependencies
