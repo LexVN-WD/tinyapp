@@ -211,7 +211,7 @@ app.post("/register", (req, res) => {
     });
   };
 
-  if (findUserByEmail(users, userEmail)) {
+  if (findUserByEmail(userEmail, users)) {
     return res.status(400).json({
       status: "email already exists"
     })
@@ -233,7 +233,7 @@ app.post("/login", (req, res) => {
   let userEmail = req.body.email;
   let userPass = req.body.password;
   let hashedPass = bcrypt.hashSync(userPass, 10);
-  let user = findUserByEmail(users, userEmail)
+  let user = findUserByEmail(userEmail, users)
   
   // if email cannot be found, return 403
   if (user === false) {
