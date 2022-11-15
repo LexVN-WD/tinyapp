@@ -57,9 +57,10 @@ app.get("/urls/new", (req, res) => {
 // GET - /urls/:id (by shortURL handle)
 app.get("/urls/:id", (req, res) => {
   let user = req.cookies["user_id"];
+  const id = req.params.id
   const templateVars = {
-    id: req.params.id,
-    longURL: urlDatabase[req.params.id],
+    id: id,
+    longURL: urlDatabase[id].longURL,
     user: user,
   };
   res.render("urls_show", templateVars);
@@ -74,7 +75,7 @@ app.get("/urls/<%= id%>/update", (req, res) => {
 // GET route to handle shortURL requests and redirect to longURL
 app.get("/u/:id", (req, res) => {
   const id = req.params.id
-  const longURL = urlDatabase[id];
+  const longURL = urlDatabase[id].longURL;
   const templateVars = {
     id: id,
     longURL: longURL,
@@ -115,21 +116,22 @@ app.get("/login", (req, res) => {
 // Posting New URL
 app.post("/urls", (req, res) => {
   let newID = randomID();
-  urlDatabase[newID] = req.body.longURL;
   const user = req.cookies["user_id"];
+  urlDatabase[newID] = req.body.longURL;
+  urlDatabase[newID] = { longURL: req.body.longURL, userID: user };
   const templateVars = {
     user: users[user],
   }
   if (!user) {
-    res.send({ERROR: "Must be logged in to shorten URLS"});
+    res.send({ ERROR: "Must be logged in to shorten URLS" });
   }
   res.redirect(`/urls/${newID}`);
 });
 
 /* Delete Existing Url */
 app.post("/urls/:id/delete", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  delete urlDatabase[req.params.id]
+  const id = req.params.id
+  delete urlDatabase[id];
   res.redirect("/urls");
 });
 
@@ -137,7 +139,7 @@ app.post("/urls/:id/delete", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   const id = req.params.id;
   const longURL = req.body.longURL;
-  urlDatabase[id] = longURL
+  urlDatabase[id].longURL = longURL
   res.redirect(`/urls/${id}`);
 });
 
