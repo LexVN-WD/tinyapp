@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const cookieParser = require('cookie-parser');
+const bcrypt = require("bcryptjs");
 
 // Setup
 app.set("view engine", "ejs");
@@ -187,6 +188,7 @@ app.post("/register", (req, res) => {
   const newID = randomID();
   let userEmail = req.body.email;
   let userPass = req.body.password;
+  let hashedPass = bcrypt.hashSync(userPass, 10);
 
   // error code checks
   if (userEmail.length === 0) {
@@ -209,18 +211,20 @@ app.post("/register", (req, res) => {
     users[newID] = {
       id: newID,
       email: req.body.email,
-      password: req.body.password,
+      password: hashedPass,
     }
+    //console.log(users[newID].password); --> checking for Hash
   }
   res.cookie('user_id', newID);
   res.redirect("/urls");
   //console.log(users); //--> /test to make sure users object
 });
 
-// POST - Login Page
+// POST - Login Page - Endpoint
 app.post("/login", (req, res) => {
   let userEmail = req.body.email;
   let userPass = req.body.password;
+  let hashedPass = bcrypt.hashSync(userPass, 10);
   let user = findUserByEmail(users, userEmail)
   
   // if email cannot be found, return 403
@@ -231,14 +235,13 @@ app.post("/login", (req, res) => {
   };
   // email matches but passwords do not, return 403
   if (user !== false) {
-    if (user.password !== userPass) {
-      return res.status(403).json({
-        status: "password does not match"
-      })
+    if (bcrypt.compareSync(user.password, hashedPass)) {
+      res.cookie('user_id', user.id);
+      res.redirect("/urls");
+    } else {
+      res.send({ status: "password does not match"})
     }
   }
-  res.cookie('user_id', user.id);
-  res.redirect("/urls");
 });
 
 
