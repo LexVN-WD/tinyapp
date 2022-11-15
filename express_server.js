@@ -9,47 +9,15 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// URL database variable
-const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
+// Database Imports
+const urlDatabase = require("./url_database");
+const users = require("./users_database");
 
-// Global users object 
-const users = {
-  userRandomID: {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur",
-  },
-  user2RandomID: {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk",
-  },
-};
-
-// random string url id generator
-const randomID = () => {
-  const randomString = Math.random().toString(36).substring(2, 8);
-  return randomString;
- };
-
-
-// Helper function to find user by email
-const findUserByEmail = (users, userEmail) => {
-  for (const userID in users) {
-    if (users[userID]["email"] === userEmail) {
-      return users[userID];
-    }
-  }
-  return false;
-};
-
-
-console.log()
-
-
+// Helper Function Imports
+const {
+  randomID,
+  findUserByEmail,
+} = require("./helper_functions");
 
 // ------ GET Requests ------ //
 
