@@ -9,7 +9,7 @@ const randomID = () => {
 };
 
 // Helper function to find user by email
-const findUserByEmail = (users, userEmail) => {
+const findUserByEmail = (userEmail, users) => {
   for (const userID in users) {
     if (users[userID]["email"] === userEmail) {
       return users[userID];
