@@ -2,13 +2,19 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const bcrypt = require("bcryptjs");
 
 // Setup
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ["secret keys"],
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}));
 
 // Database Imports
 const urlDatabase = require("./url_database");
@@ -37,7 +43,7 @@ app.get("/urls.json", (req, res) => {
 
 // GET - /urls
 app.get("/urls", (req, res) => {
-  let user = req.cookies["user_id"];
+  let user = req.session.user_id;
   if (!user) {
     res.send({ERROR: "You are not logged in"});
   }
@@ -51,7 +57,7 @@ app.get("/urls", (req, res) => {
 
 //GET route to render urls_new template
 app.get("/urls/new", (req, res) => {
-  let user = req.cookies["user_id"];
+  let user = req.session.user_id;
   let templateVars = {
     user: users[user],
   };
@@ -63,7 +69,7 @@ app.get("/urls/new", (req, res) => {
 
 // GET - /urls/:id (by shortURL handle)
 app.get("/urls/:id", (req, res) => {
-  let user = req.cookies["user_id"];
+  let user = req.session.user_id;
   let id = req.params.id;
   if (!user) {
     res.send({ ERROR: "You need to be logged in to access this URL" });
@@ -109,8 +115,9 @@ app.get("/u/:id", (req, res) => {
   }
 });
 
+// GET - Register Page
 app.get("/register", (req, res) => {
-  let user = req.cookies["user_id"];
+  let user = req.session.user_id;
   const templateVars = {
     user: user,
   };
@@ -120,8 +127,9 @@ app.get("/register", (req, res) => {
   res.render("urls_register", templateVars);
 });
 
+// GET - Login Page
 app.get("/login", (req, res) => {
-  let user = req.cookies["user_id"];
+  let user = req.session.user_id;
   const templateVars = {
     user: user,
   };
@@ -137,7 +145,7 @@ app.get("/login", (req, res) => {
 // Posting New URL
 app.post("/urls", (req, res) => {
   let newID = randomID();
-  const user = req.cookies["user_id"];
+  const user = req.session.user_id;
   //urlDatabase[newID] = req.body.longURL;
   urlDatabase[newID] = { longURL: req.body.longURL, userID: user };
   const templateVars = {
@@ -152,7 +160,7 @@ app.post("/urls", (req, res) => {
 /* Delete Existing Url */
 app.post("/urls/:id/delete", (req, res) => {
   const id = req.params.id;
-  const user = req.cookies["user_id"];
+  const user = req.session.user_id;
   const userObj = urlDatabase[id];
   if (!user) {
     res.send({ ERROR: "You need to be logged in to access this URL" });
@@ -215,7 +223,7 @@ app.post("/register", (req, res) => {
     }
     //console.log(users[newID].password); --> checking for Hash
   }
-  res.cookie('user_id', newID);
+  req.session.user_id = newID;
   res.redirect("/urls");
   //console.log(users); //--> /test to make sure users object
 });
@@ -236,7 +244,7 @@ app.post("/login", (req, res) => {
   // email matches but passwords do not, return 403
   if (user !== false) {
     if (bcrypt.compareSync(user.password, hashedPass)) {
-      res.cookie('user_id', user.id);
+      req.session.user_id = user.id;
       res.redirect("/urls");
     } else {
       res.send({ status: "password does not match"})
