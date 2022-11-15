@@ -2,12 +2,12 @@
 const urlDatabase = {
   b2xVn2: {
     longURL: "http://www.lighthouselabs.ca",
-    userID: "lighthouse-id"
+    userID: "userRandomID"
   },
   
   "9sm5xK": {
     longURL: "http://www.google.com",
-    userID: "google-id"
+    userID: "user2RandomID"
   },
 };
 
