@@ -23,7 +23,8 @@ const {
 
 // GET - Landing Page
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  let user;
+  res.render("urls_home", user)
 });
 
 // Adding Routes
@@ -35,6 +36,10 @@ app.get("/urls.json", (req, res) => {
 // GET - /urls
 app.get("/urls", (req, res) => {
   let user = req.cookies["user_id"];
+  if (!user) {
+    res.send({ERROR: "You are not logged in"});
+  }
+
   let templateVars = { 
     urls: urlDatabase,
     user: users[user],
