@@ -63,14 +63,17 @@ app.get("/urls/new", (req, res) => {
 // GET - /urls/:id (by shortURL handle)
 app.get("/urls/:id", (req, res) => {
   let user = req.cookies["user_id"];
-
+  let id = req.params.id;
   if (!user) {
     res.send({ ERROR: "You need to be logged in to access this URL" });
   }
+  const userObj = urlDatabase[id];
+  
+  if (!userObj) {
+    res.send({ ERROR: "Invalid URL ID" });
+  }
 
-  const userObj = urlDatabase[req.params.id];
-
-  if (userObj.user !== user) {
+  if (user !== userObj.userID) {
     res.send({ ERROR: "This URL does not belong to you" });
   }
 
@@ -147,7 +150,20 @@ app.post("/urls", (req, res) => {
 
 /* Delete Existing Url */
 app.post("/urls/:id/delete", (req, res) => {
-  const id = req.params.id
+  const id = req.params.id;
+  const user = req.cookies["user_id"];
+  const userObj = urlDatabase[id];
+  if (!user) {
+    res.send({ ERROR: "You need to be logged in to access this URL" });
+  }
+
+  if (!userObj) {
+    res.send({ ERROR: "Invalid URL ID" });
+  }
+
+  if (user !== userObj.userID) {
+    res.send({ ERROR: "This URL does not belong to you" });
+  }
   delete urlDatabase[id];
   res.redirect("/urls");
 });
