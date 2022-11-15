@@ -80,6 +80,9 @@ app.get("/urls/new", (req, res) => {
   let templateVars = {
     user: users[user],
   };
+  if (!user) {
+    res.redirect("/login");
+  }
   res.render("urls_new", templateVars);
 });
 
@@ -111,6 +114,9 @@ app.get("/register", (req, res) => {
   const templateVars = {
     user: user,
   };
+  if (user) {
+    res.redirect("/urls");
+  }
   res.render("urls_register", templateVars);
 });
 
@@ -119,6 +125,9 @@ app.get("/login", (req, res) => {
   const templateVars = {
     user: user,
   };
+  if (user) {
+    res.redirect("/urls");
+  }
   res.render("urls_login", templateVars);
 });
 
@@ -127,7 +136,9 @@ app.get("/login", (req, res) => {
 
 /* New Url */
 app.post("/urls", (req, res) => {
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+  let newID = randomID();
+  urlDatabase[newID] = req.body.longURL;
+  res.redirect(`/urls/${newID}`);
 });
 
 /* Delete Existing Url */
