@@ -16,7 +16,21 @@ const findUserByEmail = (users, userEmail) => {
   return false;
 };
 
+// Helper function that returns URLS where userID is equal to ID of currently logged-in user
+const urlsForUser = (id, users) => {
+  for (keys in users) {
+    if (id === users[id].userID) {
+      urls[keys] = {
+        longURL: users[keys].longURL,
+      }
+    }
+  }
+  return false;
+}
+
+
 module.exports = {
   randomID,
-  findUserByEmail
+  findUserByEmail,
+  urlsForUser,
 }
