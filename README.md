@@ -10,10 +10,19 @@ This simple multipage app allows the user to :
 
 ## Final Product
 
+### Home-page
 !["Home-page"](/pictures/tinyapp-home.png)
+
+### Register Account Page
 !["Register"](/pictures/tinyapp-register.png)
+
+### Log-in Page
 !["Log-In"](/pictures/tinyapp-login.png)
+
+### Account URLS Page
 !["URLS"](/pictures/tinyapp-urls.png)
+
+### Edit Account URLS Page
 !["Edit"](/pictures/tinyapp-edit.png)
 
 
