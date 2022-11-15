@@ -55,7 +55,7 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-//GET route to render urls_new template
+//GET - route to render urls_new template
 app.get("/urls/new", (req, res) => {
   let user = req.session.user_id;
   let templateVars = {
@@ -99,7 +99,7 @@ app.get("/urls/<%= id%>/update", (req, res) => {
 });
 
 
-// GET route to handle shortURL requests and redirect to longURL
+// GET - route to handle shortURL requests and redirect to longURL
 app.get("/u/:id", (req, res) => {
   const id = req.params.id
   const longURL = urlDatabase[id].longURL;
@@ -142,7 +142,7 @@ app.get("/login", (req, res) => {
 
 // ------ POST Requests ------ //
 
-// Posting New URL
+// POST - Creating new Urls
 app.post("/urls", (req, res) => {
   let newID = randomID();
   const user = req.session.user_id;
@@ -157,7 +157,7 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${newID}`);
 });
 
-/* Delete Existing Url */
+// POST - Delete Existing Url 
 app.post("/urls/:id/delete", (req, res) => {
   const id = req.params.id;
   const user = req.session.user_id;
@@ -177,7 +177,7 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-/* Update Existing Url */
+// POST - Edit existing URL
 app.post("/urls/:id", (req, res) => {
   const id = req.params.id;
   const longURL = req.body.longURL;
@@ -185,7 +185,7 @@ app.post("/urls/:id", (req, res) => {
   res.redirect(`/urls/${id}`);
 });
 
-// POST - Logout and clear cookie key-value pair
+// POST - Logout and clear cookie 
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect("/login");
@@ -253,15 +253,12 @@ app.post("/login", (req, res) => {
 });
 
 
-
-
-
-
 // Sending HTML
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+// Listener
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
