@@ -187,7 +187,7 @@ app.post("/urls/:id", (req, res) => {
 
 // POST - Logout and clear cookie key-value pair
 app.post("/logout", (req, res) => {
-  res.clearCookie('user_id');
+  req.session = null;
   res.redirect("/login");
 });
 
