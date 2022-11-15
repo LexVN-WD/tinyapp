@@ -17,6 +17,7 @@ const users = require("./users_database");
 const {
   randomID,
   findUserByEmail,
+  urlsForUser,
 } = require("./helper_functions");
 
 // ------ GET Requests ------ //
@@ -41,7 +42,7 @@ app.get("/urls", (req, res) => {
   }
 
   let templateVars = { 
-    urls: urlDatabase,
+    urls: urlsForUser(user),
     user: users[user],
   };
   res.render("urls_index", templateVars);
@@ -62,12 +63,23 @@ app.get("/urls/new", (req, res) => {
 // GET - /urls/:id (by shortURL handle)
 app.get("/urls/:id", (req, res) => {
   let user = req.cookies["user_id"];
-  const id = req.params.id
+
+  if (!user) {
+    res.send({ ERROR: "You need to be logged in to access this URL" });
+  }
+
+  const userObj = urlDatabase[req.params.id];
+
+  if (userObj.user !== user) {
+    res.send({ ERROR: "This URL does not belong to you" });
+  }
+
   const templateVars = {
-    id: id,
-    longURL: urlDatabase[id].longURL,
-    user: user,
+    id: req.params.id,
+    longURL: userObj.longURL,
+    user: users[user],
   };
+
   res.render("urls_show", templateVars);
 });
 
@@ -122,7 +134,7 @@ app.get("/login", (req, res) => {
 app.post("/urls", (req, res) => {
   let newID = randomID();
   const user = req.cookies["user_id"];
-  urlDatabase[newID] = req.body.longURL;
+  //urlDatabase[newID] = req.body.longURL;
   urlDatabase[newID] = { longURL: req.body.longURL, userID: user };
   const templateVars = {
     user: users[user],
