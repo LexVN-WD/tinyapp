@@ -7,14 +7,15 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-item nav-link" href="/urls">URL List</a>
-        <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+        <a style="color:white" class="nav-item nav-link" href="/urls">URL List</a>
+        <a style="color:white" class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
         <% if (user) { %>
-          <label> Welcome: <%= user.email %> <label>
+          <label style="color:white"> <b>Welcome: <%= user.email %></b> <label>
+            <br>
           <form method="POST" action="/logout">
-            <button type="submit" class="btn btn btn-dark">Logout</button>
+            <button style="color:black" type="submit" class="btn btn btn-success"><b>Logout</b></button>
           </form>
           <% } else { %>
           <form method="POST" action="/login">

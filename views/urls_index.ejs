@@ -29,17 +29,17 @@
               <%= id %>
             </td>
             <td>
-              <%= urls[id] %>
+              <%= urls[id].longURL %>
             </td>
             <td>
               <form method="POST" action="/urls/<%= id %>/delete">
-                <button type="submit">Delete
+                <button button style="color:black" type="submit" class="btn btn btn-success" type="submit">Delete
                 </button>
               </form>
             </td>
             <td>
               <form method="GET" action="/urls/<%= id %>">
-                <button type="submit">Update
+                <button button style="color:black" type="submit" class="btn btn btn-success" type="submit">Update
                 </button>
               </form>
             </td>
@@ -49,7 +49,7 @@
       </form>
     </table>
           <p class="card-text">
-            New Short URL: <a href="#">
+            New Short URL: <a href="/urls/new">
               <%= 'Create New Link Here' %>
             </a>
           </p>
