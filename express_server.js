@@ -81,7 +81,7 @@ app.get("/urls/new", (req, res) => {
     user: users[user],
   };
   if (!user) {
-    res.redirect("/login");
+    return res.redirect("/login");
   }
   res.render("urls_new", templateVars);
 });
@@ -105,8 +105,18 @@ app.get("/urls/<%= id%>/update", (req, res) => {
 
 // GET route to handle shortURL requests and redirect to longURL
 app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id];
-  res.redirect(longURL);
+  const id = req.params.id
+  const longURL = urlDatabase[id];
+  const templateVars = {
+    id: id,
+    longURL: longURL,
+    user: users[id],
+  }
+  if (!longURL) {
+    res.send({Error: "this tinyURL does not exist"})
+  } else {
+    res.redirect(longURL);
+  }
 });
 
 app.get("/register", (req, res) => {
@@ -134,10 +144,17 @@ app.get("/login", (req, res) => {
 
 // ------ POST Requests ------ //
 
-/* New Url */
+// Posting New URL
 app.post("/urls", (req, res) => {
   let newID = randomID();
   urlDatabase[newID] = req.body.longURL;
+  const user = req.cookies["user_id"];
+  const templateVars = {
+    user: users[user],
+  }
+  if (!user) {
+    res.send({ERROR: "Must be logged in to shorten URLS"});
+  }
   res.redirect(`/urls/${newID}`);
 });
 
